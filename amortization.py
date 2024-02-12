@@ -9,7 +9,8 @@ def main():
   term_period = get_term_period()
   monthly_payment = calculate_monthly_payment(loan_amount, term_length, term_period, interest_rate)
   payment_schedule = calculate_loan_payments(loan_amount, interest_rate, monthly_payment)
-  additional_principal_schedule = calculate_additional_principle()
+
+  print('payment_schedule', payment_schedule)
 
 def get_loan_amount():
   while True:
@@ -70,20 +71,10 @@ def calculate_loan_payments(loan_amount=0, interest_rate=0, monthly_payment=0):
     payment_date = payment_date + relativedelta(months=1)
 
     payments.append(
-      {'date': payment_date.strftime("%m/%d/%Y"), 'principal_payment': principal_payment, 'interest_payment': interest_payment, 'ending_balance': ending_balance}
+      {'date': payment_date.strftime("%m/%d/%Y"), 'principal_payment': f'{principal_payment:,.2f}', 'interest_payment': f'{interest_payment:,.2f}', 'ending_balance': f'{ending_balance:,.2f}'}
     )
 
   return payments
-
-def calculate_additional_principle():
-    while True:
-      try:
-        additional_principle_amount = float(input("Would you like to make an additional payment towards the principle? "))
-      except Exception:
-        print("That is not a number")
-      else:
-        return additional_principle_amount
-
 
 if __name__ == "__main__":
   main()
