@@ -3,44 +3,41 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 
 def main():
-  loanAmount = get_loan_amount()
-  interestRate = get_interest_rate()
-  termLength = get_term_length()
-  termPeriod = get_term_period()
-  monthlyPayment = calculate_monthly_payment(loanAmount, termLength, termPeriod, interestRate)
-  paymentSchedule = calculate_loan_payments(loanAmount, interestRate, monthlyPayment)
+  loan_amount = get_loan_amount()
+  interest_rate = get_interest_rate()
+  term_length = get_term_length()
+  term_period = get_term_period()
+  monthly_payment = calculate_monthly_payment(loan_amount, term_length, term_period, interest_rate)
+  payment_schedule = calculate_loan_payments(loan_amount, interest_rate, monthly_payment)
 
-  print(f"loan amount is: ${loanAmount:,.2f} with an interest rate of {interestRate}% for {termLength} {termPeriod}")
-
-  for payment in paymentSchedule:
-      print(f"{payment['date']}, {payment['principalPayment']:,.2f}, {payment['interestPayment']:,.2f}, {payment['endingBalance']:,.2f}")
+  print('payment_schedule', payment_schedule)
 
 def get_loan_amount():
   while True:
     try:
-      loanAmount = float(input("What's the loan amount? "))
+      loan_amount = float(input("What's the loan amount? "))
     except Exception:
       print("That is not a number")
     else:
-      return loanAmount
+      return loan_amount
     
 def get_interest_rate():
     while True:
       try:
-        interestRate = float(input("What's the interest rate? "))
+        interest_rate = float(input("What's the interest rate? "))
       except Exception:
         print("That is not a number")
       else:
-        return interestRate
+        return interest_rate
 
 def get_term_length():
   while True:
     try:
-      termLength = int(input("What's the term length? "))
+      term_length = int(input("What's the term length? "))
     except Exception:
       print("That is not a number")
     else:
-      return termLength
+      return term_length
 
 def get_term_period():
   questions = [
@@ -52,29 +49,29 @@ def get_term_period():
   
   return inquirer.prompt(questions)['period']
 
-def calculate_monthly_payment(loanAmount=0, termLength=0, termPeriod='Months', interestRate=0):
-  adjustedTermLength = termLength if termPeriod == 'Months' else termLength*12
-  interest = (interestRate/100)/12
+def calculate_monthly_payment(loan_amount=0, term_length=0, term_period='Months', interest_rate=0):
+  adjusted_term_length = term_length if term_period == 'Months' else term_length*12
+  interest = (interest_rate/100)/12
 
-  numerator = (interest*(((1+interest)**adjustedTermLength)))
-  denominator = (((1+interest)**adjustedTermLength)-1)
+  numerator = (interest*(((1+interest)**adjusted_term_length)))
+  denominator = (((1+interest)**adjusted_term_length)-1)
 
-  return loanAmount*(numerator/denominator)
+  return loan_amount*(numerator/denominator)
 
-def calculate_loan_payments(loanAmount=0, interestRate=0, monthlyPayment=0):
+def calculate_loan_payments(loan_amount=0, interest_rate=0, monthly_payment=0):
   payments = []
-  endingBalance = loanAmount
-  interest = (interestRate/100)/12
-  paymentDate = date.today()
+  ending_balance = loan_amount
+  interest = (interest_rate/100)/12
+  payment_date = date.today()
 
-  while endingBalance > 0:
-    interestPayment = endingBalance * interest
-    principalPayment = monthlyPayment - interestPayment
-    endingBalance = endingBalance - principalPayment
-    paymentDate = paymentDate + relativedelta(months=1)
+  while ending_balance > 0:
+    interest_payment = ending_balance * interest
+    principal_payment = monthly_payment - interest_payment
+    ending_balance = ending_balance - principal_payment
+    payment_date = payment_date + relativedelta(months=1)
 
     payments.append(
-      {'date': paymentDate.strftime("%m/%d/%Y"), 'principalPayment': principalPayment, 'interestPayment': interestPayment, 'endingBalance': endingBalance}
+      {'date': payment_date.strftime("%m/%d/%Y"), 'principal_payment': f'{principal_payment:,.2f}', 'interest_payment': f'{interest_payment:,.2f}', 'ending_balance': f'{ending_balance:,.2f}'}
     )
 
   return payments
